@@ -1,22 +1,38 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Button from './components/Button';
 
 function App() {
+  const [request, setRequest] = useState("https://pokeapi.co/api/v2/pokemon/")
+  const [pokemons, setPokemons] = useState([])
+
+  const [prevPage, setPrevPage] = useState(null | '')
+  const [nextPage, setNextPage] = useState(null | '')
+
+  useEffect(() => {
+    fetch(request).then(resp => resp.json()).then(resp => {
+      setPokemons([...resp.results])
+      setPrevPage(resp.previous)
+      setNextPage(resp.next)
+    })
+  }, [request])
+
+  const rendernextPage = () => {
+    if (nextPage !== null) {
+      setRequest(nextPage)
+    }
+  }
+
+  const renderprevPage = () => {
+    if (prevPage !== null) {
+      setRequest(prevPage)
+    } else {
+      setRequest("https://pokeapi.co/api/v2/pokemon/")
+    }
+  }
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
